@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CAP Demo</title>
+  <!-- Include widget correttamente -->
+  <script src="https://cdn.jsdelivr.net/npm/@cap.js/widget@latest" defer onload="initializeCap()"></script>
+</head>
+<body>
+  <form id="myForm">
+    <!-- Usa direttamente il custom element come indicato nella doc -->
+    <cap-widget id="cap" data-cap-api-endpoint="http://localhost:3000/api"></cap-widget>
+
+    <input type="hidden" name="cap-token" id="cap-token" />
+    <input type="hidden" name="cap-solutions" id="cap-solutions" />
+
+    <button type="submit">Invia</button>
+  </form>
+
+  <script>
+    let capWidget;
+
+    function initializeCap() {
+      capWidget = document.querySelector('#cap');
+
+      capWidget.addEventListener('solve', (e) => {
+        document.getElementById('cap-token').value = e.detail.token;
+        document.getElementById('cap-solutions').value = JSON.stringify(e.detail.solutions);
+        alert("CAP risolto!");
+      });
+    }
+
+    document.getElementById('myForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      if (!capWidget) {
+        alert("CAP widget non inizializzato.");
+        return;
+      }
+
+      // Trigger PoW invisibile
+      capWidget.solve(); 
+    });
+  </script>
+</body>
+</html>
